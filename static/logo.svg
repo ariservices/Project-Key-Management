@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80">
+  <defs>
+    <style>
+      .logo-text { fill: #1DA1F2; font-family: 'Arial Black', 'Helvetica Neue', sans-serif; font-weight: 900; }
+      .logo-line { fill: #1DA1F2; }
+    </style>
+  </defs>
+  
+  <!-- HELDER text -->
+  <text x="50" y="45" class="logo-text" font-size="48" letter-spacing="2">HELDER</text>
+  
+  <!-- Left wing lines -->
+  <rect x="5" y="15" width="35" height="6" class="logo-line"/>
+  <rect x="10" y="25" width="30" height="6" class="logo-line"/>
+  <rect x="15" y="35" width="25" height="6" class="logo-line"/>
+  
+  <!-- Right wing lines -->
+  <rect x="295" y="15" width="35" height="6" class="logo-line"/>
+  <rect x="295" y="25" width="30" height="6" class="logo-line"/>
+  <rect x="295" y="35" width="25" height="6" class="logo-line"/>
+  
+  <!-- AUTOBEDRIJF subtitle -->
+  <text x="95" y="70" class="logo-text" font-size="18" letter-spacing="8">AUTOBEDRIJF</text>
+</svg>
+

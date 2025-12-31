@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sleutelbeheer - Helder Autobedrijf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0b;
+            --card: #141417;
+            --border: #2a2a2e;
+            --text: #fafafa;
+            --text-muted: #71717a;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --premium: #8b5cf6;
+            --medium: #06b6d4;
+            --budget: #84cc16;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo {
+            height: 36px;
+            width: auto;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Stats Bar */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0 1rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 0;
+            padding: 0.75rem 0.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Content Sections */
+        .content {
+            padding: 1rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Slot Grid */
+        .slot-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .slot-category {
+            margin-bottom: 1rem;
+        }
+
+        .slot-category-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slot-category-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .slot-category-title .dot.premium { background: var(--premium); }
+        .slot-category-title .dot.medium { background: var(--medium); }
+        .slot-category-title .dot.budget { background: var(--budget); }
+        .slot-category-title .dot.sold { background: var(--warning); }
+
+        .slot-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .slot-item:active {
+            transform: scale(0.98);
+            background: var(--border);
+        }
+
+        .slot-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .slot-plate {
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+        }
+
+        .slot-vehicle {
+            font-size: 0.8rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .slot-details {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.15rem;
+        }
+
+        .slot-color {
+            background: var(--border);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .slot-price {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .slot-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            min-width: 2.5rem;
+            text-align: center;
+        }
+
+        /* Search */
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            padding-left: 2.75rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: var(--bg);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .modal-info-item {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+
+        .modal-info-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-info-value {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            z-index: 300;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .text-muted { color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/static/logo.png" alt="Helder Autobedrijf" class="header-logo">
+    </header>
+
+    <div class="stats" id="stats">
+        <div class="stat">
+            <div class="stat-value" id="stat-occupied">-</div>
+            <div class="stat-label">Bezet</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="stat-available">-</div>
+            <div class="stat-label">Vrij</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="stat-sold">-</div>
+            <div class="stat-label">Verkocht</div>
+        </div>
+    </div>
+
+    <nav class="tabs">
+        <button class="tab active" data-tab="slots">Slots</button>
+        <button class="tab" data-tab="sold">Verkocht</button>
+        <button class="tab" data-tab="add">Toevoegen</button>
+        <button class="tab" data-tab="sync">Sync</button>
+    </nav>
+
+    <main class="content">
+        <!-- Slots Section -->
+        <section class="section active" id="section-slots">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search" placeholder="Zoek op kenteken...">
+            </div>
+            <div id="slots-list">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- Sold Section -->
+        <section class="section" id="section-sold">
+            <div id="sold-list">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- Add Vehicle Section -->
+        <section class="section" id="section-add">
+            <form id="add-form">
+                <div class="form-group">
+                    <label class="form-label">Kenteken *</label>
+                    <input type="text" class="form-input" id="add-plate" placeholder="XX-123-YY" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Aankoopprijs (€)</label>
+                    <input type="number" class="form-input" id="add-price" placeholder="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Merk</label>
+                    <input type="text" class="form-input" id="add-brand" placeholder="BMW">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Model</label>
+                    <input type="text" class="form-input" id="add-model" placeholder="3-serie">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kleur</label>
+                    <input type="text" class="form-input" id="add-color" placeholder="Zwart">
+                </div>
+                <button type="submit" class="btn btn-primary">Toevoegen</button>
+            </form>
+        </section>
+
+        <!-- Sync Section -->
+        <section class="section" id="section-sync">
+            <div class="sync-status" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span id="sync-indicator" style="width: 10px; height: 10px; border-radius: 50%; background: var(--success);"></span>
+                    <span style="font-weight: 500;">Auto-Sync Actief</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Interval: <strong id="sync-interval">5</strong> minuten</span><br>
+                    <span>Laatste sync: <strong id="last-sync-time">-</strong></span>
+                </div>
+            </div>
+            <div id="sync-result" style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: none;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Laatste sync resultaat</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;">
+                    <div>
+                        <div id="result-added" style="font-size: 1.25rem; font-weight: 700; color: var(--success);">0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Nieuw</div>
+                    </div>
+                    <div>
+                        <div id="result-sold" style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Verkocht</div>
+                    </div>
+                    <div>
+                        <div id="result-total" style="font-size: 1.25rem; font-weight: 700; color: var(--text-muted);">0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Totaal</div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="sync-btn">🔄 Handmatige Sync</button>
+            <p style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.75rem;">
+                Verkochte voertuigen worden automatisch gedetecteerd via de Autoflex API
+            </p>
+        </section>
+    </main>
+
+    <!-- Vehicle Detail Modal -->
+    <div class="modal-overlay" id="vehicle-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-plate">-</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="modal-content">
+                <div class="modal-info-grid">
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Slot</span>
+                        <span class="modal-info-value" id="modal-slot">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Merk</span>
+                        <span class="modal-info-value" id="modal-brand">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Model</span>
+                        <span class="modal-info-value" id="modal-model">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Kleur</span>
+                        <span class="modal-info-value" id="modal-color">-</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Aankoopprijs</span>
+                        <span class="modal-info-value" id="modal-price">-</span>
+                    </div>
+                </div>
+                <div class="form-group mt-1">
+                    <label class="form-label">Verkoopprijs (€)</label>
+                    <input type="number" class="form-input" id="modal-sell-price" placeholder="Optioneel" step="0.01">
+                </div>
+                <button class="btn btn-danger" id="modal-sell-btn">Markeer als Verkocht</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // State
+        let slots = [];
+        let soldVehicles = [];
+        let selectedVehicle = null;
+
+        // Elements
+        const tabs = document.querySelectorAll('.tab');
+        const sections = document.querySelectorAll('.section');
+        const searchInput = document.getElementById('search');
+        const modal = document.getElementById('vehicle-modal');
+
+        // Tab Navigation
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`section-${tab.dataset.tab}`).classList.add('active');
+            });
+        });
+
+        // Load Data
+        async function loadStatus() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                document.getElementById('stat-occupied').textContent = data.occupied_slots;
+                document.getElementById('stat-available').textContent = data.available_slots;
+                document.getElementById('stat-sold').textContent = data.sold_vehicles_pending;
+            } catch (e) {
+                console.error('Failed to load status:', e);
+            }
+        }
+
+        async function loadSlots() {
+            try {
+                const res = await fetch('/api/slots');
+                slots = await res.json();
+                renderSlots();
+            } catch (e) {
+                console.error('Failed to load slots:', e);
+            }
+        }
+
+        async function loadSold() {
+            try {
+                const res = await fetch('/api/sold');
+                soldVehicles = await res.json();
+                renderSold();
+            } catch (e) {
+                console.error('Failed to load sold:', e);
+            }
+        }
+
+        function renderSlots(filter = '') {
+            const container = document.getElementById('slots-list');
+            const filtered = slots.filter(s => 
+                s.license_plate.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>Geen voertuigen gevonden</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by category
+            const premium = filtered.filter(s => s.slot < 50);
+            const medium = filtered.filter(s => s.slot >= 50 && s.slot < 100);
+            const budget = filtered.filter(s => s.slot >= 100);
+
+            let html = '';
+
+            if (premium.length > 0) {
+                html += `
+                    <div class="slot-category">
+                        <div class="slot-category-title">
+                            <span class="dot premium"></span>
+                            Premium (0-49) - ${premium.length}
+                        </div>
+                        <div class="slot-grid">
+                            ${premium.map(renderSlotItem).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (medium.length > 0) {
+                html += `
+                    <div class="slot-category">
+                        <div class="slot-category-title">
+                            <span class="dot medium"></span>
+                            Midden (50-99) - ${medium.length}
+                        </div>
+                        <div class="slot-grid">
+                            ${medium.map(renderSlotItem).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (budget.length > 0) {
+                html += `
+                    <div class="slot-category">
+                        <div class="slot-category-title">
+                            <span class="dot budget"></span>
+                            Budget (100-199) - ${budget.length}
+                        </div>
+                        <div class="slot-grid">
+                            ${budget.map(renderSlotItem).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+            // Add click handlers
+            container.querySelectorAll('.slot-item').forEach(item => {
+                item.addEventListener('click', () => openVehicleModal(item.dataset.plate));
+            });
+        }
+
+        function renderSlotItem(slot) {
+            const vehicle = slot.brand && slot.model ? `${slot.brand} ${slot.model}` : '';
+            const color = slot.color || '';
+
+            return `
+                <div class="slot-item" data-plate="${slot.license_plate}">
+                    <div class="slot-info">
+                        <div class="slot-plate">${slot.license_plate}</div>
+                        <div class="slot-vehicle">${vehicle || 'Onbekend voertuig'}</div>
+                        ${color ? `<div class="slot-details"><span class="slot-color">${color}</span></div>` : ''}
+                    </div>
+                    <div class="slot-number">${slot.slot}</div>
+                </div>
+            `;
+        }
+
+        function renderSold() {
+            const container = document.getElementById('sold-list');
+
+            if (soldVehicles.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <p>Geen verkochte voertuigen wachtend</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="slot-category">
+                    <div class="slot-category-title">
+                        <span class="dot sold"></span>
+                        Wachtend op overdracht - ${soldVehicles.length}
+                    </div>
+                    <div class="slot-grid">
+            `;
+
+            soldVehicles.forEach(v => {
+                const price = v.sold_price ? `€${v.sold_price.toLocaleString()}` : 'N/A';
+                html += `
+                    <div class="slot-item" data-plate="${v.license_plate}">
+                        <div class="slot-info">
+                            <div class="slot-plate">${v.license_plate}</div>
+                            <div class="slot-details">Verkocht: ${price}</div>
+                        </div>
+                        <div class="slot-number">${v.sold_slot}</div>
+                    </div>
+                `;
+            });
+
+            html += '</div></div>';
+
+            html += `<button class="btn btn-outline mt-1" onclick="completeAllHandovers()">Alle overdrachten voltooien</button>`;
+
+            container.innerHTML = html;
+
+            // Add click handlers for handover
+            container.querySelectorAll('.slot-item').forEach(item => {
+                item.addEventListener('click', () => completeHandover(item.dataset.plate));
+            });
+        }
+
+        // Search
+        searchInput.addEventListener('input', (e) => {
+            renderSlots(e.target.value);
+        });
+
+        // Modal
+        function openVehicleModal(plate) {
+            const vehicle = slots.find(s => s.license_plate === plate);
+            if (!vehicle) return;
+
+            selectedVehicle = vehicle;
+            document.getElementById('modal-plate').textContent = vehicle.license_plate;
+            document.getElementById('modal-slot').textContent = vehicle.slot;
+            document.getElementById('modal-brand').textContent = vehicle.brand || '-';
+            document.getElementById('modal-model').textContent = vehicle.model || '-';
+            document.getElementById('modal-color').textContent = vehicle.color || '-';
+            document.getElementById('modal-price').textContent = vehicle.purchase_price > 0 
+                ? `€${vehicle.purchase_price.toLocaleString()}` 
+                : '-';
+            document.getElementById('modal-sell-price').value = '';
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            selectedVehicle = null;
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Sell Vehicle
+        document.getElementById('modal-sell-btn').addEventListener('click', async () => {
+            if (!selectedVehicle) return;
+
+            const sellPrice = document.getElementById('modal-sell-price').value;
+
+            try {
+                const res = await fetch('/api/sell', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        license_plate: selectedVehicle.license_plate,
+                        sold_price: sellPrice || null
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Voertuig gemarkeerd als verkocht', 'success');
+                    closeModal();
+                    loadAll();
+                } else {
+                    showToast(data.error || 'Er ging iets mis', 'error');
+                }
+            } catch (e) {
+                showToast('Netwerkfout', 'error');
+            }
+        });
+
+        // Add Vehicle
+        document.getElementById('add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const plate = document.getElementById('add-plate').value.trim();
+            const price = document.getElementById('add-price').value || 0;
+            const brand = document.getElementById('add-brand').value.trim();
+            const model = document.getElementById('add-model').value.trim();
+            const color = document.getElementById('add-color').value.trim();
+
+            try {
+                const res = await fetch('/api/vehicle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        license_plate: plate,
+                        purchase_price: price,
+                        brand,
+                        model,
+                        color
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast(`Toegevoegd aan slot ${data.slot}`, 'success');
+                    document.getElementById('add-form').reset();
+                    loadAll();
+                    // Switch to slots tab
+                    document.querySelector('[data-tab="slots"]').click();
+                } else {
+                    showToast(data.error || 'Er ging iets mis', 'error');
+                }
+            } catch (e) {
+                showToast('Netwerkfout', 'error');
+            }
+        });
+
+        // Sync Status
+        async function loadSyncStatus() {
+            try {
+                const res = await fetch('/api/sync/status');
+                const data = await res.json();
+
+                // Update interval
+                document.getElementById('sync-interval').textContent = data.sync_interval_minutes;
+
+                // Update indicator
+                const indicator = document.getElementById('sync-indicator');
+                if (data.auto_sync_enabled) {
+                    indicator.style.background = 'var(--success)';
+                } else {
+                    indicator.style.background = 'var(--text-muted)';
+                }
+
+                // Update last sync time
+                if (data.last_sync_time) {
+                    const date = new Date(data.last_sync_time);
+                    document.getElementById('last-sync-time').textContent = date.toLocaleTimeString('nl-NL');
+                }
+
+                // Update result if available
+                if (data.last_sync_result && data.last_sync_result.success) {
+                    updateSyncResult(data.last_sync_result);
+                }
+            } catch (e) {
+                console.error('Failed to load sync status:', e);
+            }
+        }
+
+        function updateSyncResult(data) {
+            const resultDiv = document.getElementById('sync-result');
+            resultDiv.style.display = 'block';
+            document.getElementById('result-added').textContent = data.added || 0;
+            document.getElementById('result-sold').textContent = data.sold_detected || 0;
+            document.getElementById('result-total').textContent = data.total || 0;
+        }
+
+        // Manual Sync
+        document.getElementById('sync-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('sync-btn');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Synchroniseren...';
+
+            try {
+                const res = await fetch('/api/sync', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success) {
+                    updateSyncResult(data);
+                    document.getElementById('last-sync-time').textContent = new Date().toLocaleTimeString('nl-NL');
+                    
+                    let message = `${data.added} nieuw`;
+                    if (data.sold_detected > 0) {
+                        message += `, ${data.sold_detected} verkocht gedetecteerd`;
+                    }
+                    showToast(message, 'success');
+                    loadAll();
+                } else {
+                    showToast(data.error || 'Synchronisatie mislukt', 'error');
+                }
+            } catch (e) {
+                showToast('Netwerkfout', 'error');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '🔄 Handmatige Sync';
+        });
+
+        // Handover
+        async function completeHandover(plate) {
+            if (!confirm(`Overdracht voltooien voor ${plate}?`)) return;
+
+            try {
+                const res = await fetch('/api/handover', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ license_plate: plate })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Overdracht voltooid', 'success');
+                    loadAll();
+                } else {
+                    showToast(data.error || 'Er ging iets mis', 'error');
+                }
+            } catch (e) {
+                showToast('Netwerkfout', 'error');
+            }
+        }
+
+        async function completeAllHandovers() {
+            if (!confirm('Alle overdrachten voltooien?')) return;
+
+            for (const v of soldVehicles) {
+                await fetch('/api/handover', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ license_plate: v.license_plate })
+                });
+            }
+
+            showToast('Alle overdrachten voltooid', 'success');
+            loadAll();
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast active ${type}`;
+
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Load all data
+        function loadAll() {
+            loadStatus();
+            loadSlots();
+            loadSold();
+            loadSyncStatus();
+        }
+
+        // Initial load
+        loadAll();
+
+        // Auto-refresh every 30 seconds to pick up auto-sync changes
+        setInterval(() => {
+            loadAll();
+        }, 30000);
+    </script>
+</body>
+</html>
+
