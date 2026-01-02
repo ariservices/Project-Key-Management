@@ -158,13 +158,24 @@ def api_sold():
 
     vehicles = []
     for s in sold:
+        brand = ''
+        model = ''
+        color = ''
+        if s.vehicle_data:
+            brand = s.vehicle_data.get('brand', '')
+            model = s.vehicle_data.get('model', '')
+            color = s.vehicle_data.get('color', '')
+
         vehicles.append({
             'sold_slot': s.sold_slot,
             'license_plate': s.license_plate,
             'purchase_price': s.purchase_price,
             'sold_price': s.sold_price,
             'original_slot': s.original_slot,
-            'sold_at': s.sold_at.isoformat()
+            'sold_at': s.sold_at.isoformat(),
+            'brand': brand,
+            'model': model,
+            'color': color
         })
 
     return jsonify(vehicles)

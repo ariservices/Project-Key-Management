@@ -812,10 +812,15 @@
 
             soldVehicles.forEach(v => {
                 const price = v.sold_price ? `€${v.sold_price.toLocaleString()}` : 'N/A';
+                const vehicle = v.brand && v.model ? `${v.brand} ${v.model}` : '';
+                const color = v.color || '';
+                
                 html += `
                     <div class="slot-item" data-plate="${v.license_plate}">
                         <div class="slot-info">
                             <div class="slot-plate">${v.license_plate}</div>
+                            <div class="slot-vehicle">${vehicle || 'Onbekend voertuig'}</div>
+                            ${color ? `<div class="slot-details"><span class="slot-color">${color}</span></div>` : ''}
                             <div class="slot-details">Verkocht: ${price}</div>
                         </div>
                         <div class="slot-number">${v.sold_slot}</div>

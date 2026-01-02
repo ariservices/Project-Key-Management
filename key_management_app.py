@@ -297,8 +297,9 @@ class KeyManagementApp:
             except (ValueError, TypeError):
                 is_sold = False
 
-            # Check if vehicle already exists in system
+            # Check if vehicle already exists in system (both slots and sold)
             existing = self.slot_manager.get_vehicle_by_license_plate(license_plate)
+            exists_anywhere = self.slot_manager.vehicle_exists_anywhere(license_plate)
 
             if is_sold:
                 # Vehicle is sold in Autoflex
@@ -322,13 +323,16 @@ class KeyManagementApp:
                             'action': 'sold_failed',
                             'success': False
                         })
+                elif exists_anywhere:
+                    # Already sold and in sold_vehicles, skip
+                    skipped_count += 1
                 else:
                     # Already sold and not in system, skip
                     skipped_count += 1
                 continue
 
             # Vehicle not sold - assign to slot if not already assigned
-            if existing is not None:
+            if exists_anywhere:
                 skipped_count += 1
                 continue
 

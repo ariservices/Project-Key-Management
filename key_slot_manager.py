@@ -39,6 +39,7 @@ class SoldVehicle:
     sold_at: datetime
     sold_price: Optional[float] = None
     buyer_info: Optional[Dict[str, Any]] = None
+    vehicle_data: Optional[Dict[str, Any]] = None
 
 
 class KeySlotManager:
@@ -370,7 +371,8 @@ class KeySlotManager:
             original_slot=assignment.slot_number,
             sold_at=datetime.now(),
             sold_price=sold_price,
-            buyer_info=buyer_info
+            buyer_info=buyer_info,
+            vehicle_data=assignment.vehicle_data
         )
 
         # Move to sold vehicles
@@ -494,6 +496,36 @@ class KeySlotManager:
                     return assignment
 
         return None
+
+    def vehicle_exists_anywhere(self, license_plate: str) -> bool:
+        """
+        Check if a vehicle exists in either normal slots or sold vehicles.
+
+        Args:
+            license_plate: The license plate to search for
+
+        Returns:
+            True if vehicle exists anywhere in the system, False otherwise
+        """
+        normalized = self._normalize_license_plate(license_plate)
+
+        # Check in normal slots
+        for assignment in self.slots.values():
+            if assignment is not None:
+                if self._normalize_license_plate(
+                    assignment.license_plate
+                ) == normalized:
+                    return True
+
+        # Check in sold vehicles
+        for sold_vehicle in self.sold_vehicles:
+            if sold_vehicle is not None:
+                if self._normalize_license_plate(
+                    sold_vehicle.license_plate
+                ) == normalized:
+                    return True
+
+        return False
 
     def get_available_slots_count(self) -> int:
         """
